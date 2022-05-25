@@ -3,8 +3,8 @@ const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
 let mouseCurrentPosition = {x: 0, y: 0};
 //resize canvas
-const GRID_WIDTH = canvas.width = 800;
-const GRID_HEIGHT = canvas.height = 800;
+const GRID_WIDTH = canvas.width = 600;
+const GRID_HEIGHT = canvas.height = 600;
 const PATTERN = 15;
 const winLine = 5;
 
