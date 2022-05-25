@@ -5,7 +5,7 @@ let mouseCurrentPosition = {x: 0, y: 0};
 //resize canvas
 const GRID_WIDTH = canvas.width = 800;
 const GRID_HEIGHT = canvas.height = 800;
-const PATTERN = 3;
+const PATTERN = 15;
 const winLine = 5;
 
 
