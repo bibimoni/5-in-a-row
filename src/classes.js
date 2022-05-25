@@ -51,10 +51,10 @@ class Board {
                 if (this.Board[i][j] === 0) this.currentImage = 2;
                 //the X tie
                 else
-                    if (this.Board[i][j] === 1) this.currentImage = 1;
-                    //the O tie    
-                    else
-                        if (this.Board[i][j] === 2) this.currentImage = 0;
+                if (this.Board[i][j] === 1) this.currentImage = 1;
+                //the O tie    
+                else
+                if (this.Board[i][j] === 2) this.currentImage = 0;
                 c.drawImage(this.image,
                     this.currentImage * (this.image.width / 2),
                     0,
@@ -74,10 +74,10 @@ class Board {
     }
     checkWin(playerId, lastMove) {
         
-        if(this.countMove(playerId, lastMove.x, lastMove.y, 1, 0) >= 5) return true;
-        if(this.countMove(playerId, lastMove.x, lastMove.y, 0, 1) >= 5) return true;
         if(this.countMove(playerId, lastMove.x, lastMove.y, 1, 1) >= 5) return true;
         if(this.countMove(playerId, lastMove.x, lastMove.y, 1, -1) >= 5) return true;
+        if(this.countMove(playerId, lastMove.x, lastMove.y, 1, 0) >= 5) return true;
+        if(this.countMove(playerId, lastMove.x, lastMove.y, 0, 1) >= 5) return true;
 
         this.win_r1 = -1; this.win_r2 = -1; this.win_c1 = -1; this.win_c2 = -1;
         return false;
