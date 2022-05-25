@@ -51,10 +51,10 @@ class Board {
                 if (this.Board[i][j] === 0) this.currentImage = 2;
                 //the X tie
                 else
-                if (this.Board[i][j] === 1) this.currentImage = 1;
-                //the O tie    
-                else
-                if (this.Board[i][j] === 2) this.currentImage = 0;
+                    if (this.Board[i][j] === 1) this.currentImage = 1;
+                    //the O tie    
+                    else
+                        if (this.Board[i][j] === 2) this.currentImage = 0;
                 c.drawImage(this.image,
                     this.currentImage * (this.image.width / 2),
                     0,
@@ -72,48 +72,87 @@ class Board {
             }
         }
     }
+    drawWinLine() {
+        console.log({ x: this.win_r1, y: this.win_c1 },
+            { x: this.win_r2, y: this.win_c2 })
+        const GRID_SIZE = (GRID_WIDTH / this.width);
+        //horizontal
+        c.fillStyle = 'green';
+        if (this.win_c1 === this.win_c2) {
+            for (let i = this.win_r2; i <= this.win_r1; i++) {
+                c.fillRect(i * GRID_SIZE, this.win_c1 * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            }
+        }
+
+        //vertical
+        else if (this.win_r1 === this.win_r2) {
+            for (let i = this.win_c2; i <= this.win_c1; i++) {
+                c.fillRect(this.win_r1 * GRID_SIZE, i * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            }
+        }
+        //diagonal
+        else if (this.win_c2 !== this.win_c1 && this.win_r1 !== this.win_r2) {
+            //diagonal 1 bottom -> top
+            if (this.win_c2 > this.win_c1) {                    let b = this.win_c2;
+                for (let a = this.win_r2; a <= this.win_r1; a++) {
+                    c.fillRect(a * GRID_SIZE, b * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                    b--;
+                }
+            }
+            else if (this.win_c2 < this.win_c1) {
+                let b = this.win_c2;
+                for (let a = this.win_r2; a <= this.win_r1; a++) {
+                    c.fillRect(a * GRID_SIZE, b * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                    b++;
+                }
+            }
+            //diagonal 2 top -> bottom
+        }
+    }
     checkWin(playerId, lastMove) {
-        
-        if(this.countMove(playerId, lastMove.x, lastMove.y, 1, 1) >= 5) return true;
-        if(this.countMove(playerId, lastMove.x, lastMove.y, 1, -1) >= 5) return true;
-        if(this.countMove(playerId, lastMove.x, lastMove.y, 1, 0) >= 5) return true;
-        if(this.countMove(playerId, lastMove.x, lastMove.y, 0, 1) >= 5) return true;
+
+        if (this.countMove(playerId, lastMove.x, lastMove.y, 1, 1) >= 5) return true;
+        if (this.countMove(playerId, lastMove.x, lastMove.y, 1, -1) >= 5) return true;
+        if (this.countMove(playerId, lastMove.x, lastMove.y, 1, 0) >= 5) return true;
+        if (this.countMove(playerId, lastMove.x, lastMove.y, 0, 1) >= 5) return true;
 
         this.win_r1 = -1; this.win_r2 = -1; this.win_c1 = -1; this.win_c2 = -1;
         return false;
-        
+
     }
     //count the length of a player's row
     countMove(playerId, lastMoveRow, lastMoveColumn, directionRow, directionColumn) {
         let currentLine = 1;
 
-        let r = lastMoveRow + directionRow; 
-        let c = lastMoveColumn + directionColumn;        
-        while(this.legalSquare(r, c) && this.Board[r][c] === playerId) {
+        let r = lastMoveRow + directionRow;
+        let c = lastMoveColumn + directionColumn;
+        while (this.legalSquare(r, c) && this.Board[r][c] === playerId) {
             currentLine++;
             r += directionRow;
-            c +=directionColumn;
+            c += directionColumn;
         }
         //set the end point to the last checked square
+        //because on the while loop above we added dRow and dColumn so when currLine = 5
+        //r c is added 1 extra time, so we need to subtract(add for the bottom) dRow and dColumn 
         this.win_r1 = r - directionRow; this.win_c1 = c - directionColumn;
 
         r = lastMoveRow - directionRow;
         c = lastMoveColumn - directionColumn;
-        while(this.legalSquare(r, c) && this.Board[r][c] === playerId) {
+        while (this.legalSquare(r, c) && this.Board[r][c] === playerId) {
             currentLine++;
             r -= directionRow;
             c -= directionColumn;
         }
         //the other end
-        this.win_r2 = r - directionRow; this.win_c2 = c - directionColumn;
+        this.win_r2 = r + directionRow; this.win_c2 = c + directionColumn;
 
         return currentLine;
     }
     //check draw method by using the 0 element of the board array
     checkDraw() {
-        for(let i = 0; i < this.width; i++) 
-            for(let j = 0; j < this.height; j++) {
-                if(this.Board[i][j] === 0) {
+        for (let i = 0; i < this.width; i++)
+            for (let j = 0; j < this.height; j++) {
+                if (this.Board[i][j] === 0) {
                     this.drawing = false;
                     return;
                 }
@@ -122,9 +161,10 @@ class Board {
     }
 
     legalSquare(r, c) {
-        return r < this.width && c < this.width && r >= 0 && c >= 1;
+        return r < this.width && c < this.width && r >= 0 && c >= 0;
     }
     update() {
+        this.drawWinLine();
         this.draw();
         this.checkDraw();
     }
@@ -144,7 +184,7 @@ class Player {
         this.isWinning = false;
     }
     performAction() {
-        if(this.isWinning === false && board.drawing === false) {
+        if (this.isWinning === false && board.drawing === false) {
             this.updateBoard();
             this.isWinning = board.checkWin(this.id, this.lastMove);
             //if player wins, stop the game
@@ -168,8 +208,8 @@ class Player {
         return translated
     }
     updateBoard() {
-        if (board.Board[this.mouseBoardPosition().x][this.mouseBoardPosition().y] === 0 
-            && this.isWinning === false 
+        if (board.Board[this.mouseBoardPosition().x][this.mouseBoardPosition().y] === 0
+            && this.isWinning === false
             && board.drawing === false) {
             board.Board[this.mouseBoardPosition().x][this.mouseBoardPosition().y] = this.id;
             this.placeTieSuccess = true;
